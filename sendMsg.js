@@ -23,7 +23,8 @@ console.log(event.body)
     // Send the order to the SQS queue
     const params = {
       MessageBody: JSON.stringify(event.body),
-       QueueUrl: "https://sqs.us-east-1.amazonaws.com/766193629404/my-queue"
+      QueueUrl: "https://sqs.us-east-1.amazonaws.com/766193629404/my-queue"
+       //QueueUrl: process.env.QUEUE_URL
     };
     await sqs.sendMessage(params);
     return {
@@ -38,7 +39,7 @@ console.log(event.body)
       // Send the failed order to the DLQ
       const dlqParams = {
         MessageBody: JSON.stringify(event.body),
-        QueueUrl: "https://sqs.us-east-1.amazonaws.com/766193629404/my-queue"
+        QueueUrl: "https://sqs.us-east-1.amazonaws.com/766193629404/my-dlq"
         //QueueUrl: process.env.DLQ_URL
       };
 

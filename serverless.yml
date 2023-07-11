@@ -18,8 +18,13 @@ functions:
           path: orders/create
           method: post
     environment:
-      QUEUE_URL: 
+      QUEUE_URL:
         Ref: MyQueue
+  
+  triggerCDS:
+    handler: receiveMsg.triggerCDS
+    events:
+      - schedule: rate(3 minutes)
 
 resources:
   Resources:
