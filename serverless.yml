@@ -1,0 +1,39 @@
+service: mts-api-gateway
+frameworkVersion: '3'
+
+plugins:
+  - serverless-offline
+  # - serverless-dotenv-plugin
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stage: dev
+
+functions:
+  createOrderV2:
+    handler: sendMsg.createOrderV2
+    events:
+      - http:
+          path: orders/create
+          method: post
+    environment:
+      QUEUE_URL: 
+        Ref: MyQueue
+
+resources:
+  Resources:
+    MyQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: my-queue
+        RedrivePolicy:
+          deadLetterTargetArn:
+            "Fn::GetAtt": [MyDLQ, Arn]
+          maxReceiveCount: 3
+
+    MyDLQ:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: my-dlq
+
